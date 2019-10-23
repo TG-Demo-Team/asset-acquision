@@ -1,0 +1,47 @@
+*.synctex.gz
+*.orig
+*.aux
+*.db
+*.script
+*.backup
+*.tex~
+*.bib~
+*.dvi
+*.bbl
+*.log
+*.out
+*.pdf
+*.ps
+*.blg
+*.toc
+*~
+*.lof
+*.lot
+*.kate-swp
+*.~*
+*.tps
+target
+.classpath
+.project
+.idea
+.settings
+*.class
+*.dtd
+*.nav
+*.snm
+*.vrb
+*.old
+*.xwm
+.bin
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# JRevel project config files
+rebel.xml
+bin/
