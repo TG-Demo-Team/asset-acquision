@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>helsinki</groupId>
+		<artifactId>airport</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>airport-dao</artifactId>
+	<packaging>jar</packaging>
+
+
+	<name>Helsinki Airport Asset Management DAO Module</name>
+	<description>A module for providing db-aware implementations for companion objects.</description>
+
+	<dependencies>
+		<!-- inter module dependencies -->
+		<dependency>
+			<groupId>helsinki</groupId>
+			<artifactId>airport-pojo-bl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<!-- TG platform dependency -->
+		<dependency>
+			<groupId>fielden</groupId>
+			<artifactId>platform-dao</artifactId>
+			<version>${platform.version}</version>
+		</dependency>
+
+		<!-- H2 RDBMS JDBC dependency; H2 is used for unit testing and as initial application database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.199</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>7.0.0.jre8</version>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>h2-all</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<databaseUri.prefix>./src/test/resources/db/TEST_DB_</databaseUri.prefix>
+				<fork.count>3</fork.count>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>sqlServer-Jenkins</id>
+			<properties>
+				<databaseUri.prefix>//uri:port;database=DB_NAME_CI_</databaseUri.prefix>
+				<fork.count>4</fork.count>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/log4j.properties</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>		
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.20.1</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*Test*.java</exclude>
+					</excludes>
+					<includes>
+						<include>**/BuildEnvironment.java</include>
+					</includes>
+					<forkCount>1</forkCount>
+					<reuseForks>true</reuseForks>
+					<argLine> 
+					    -server -Xms512m
+						-Xmx1024m
+						-XX:+UseG1GC
+						-Djava.system.class.loader=ua.com.fielden.platform.classloader.TgSystemClassLoader</argLine>
+					<systemPropertyVariables>
+						<databaseUri>${databaseUri.prefix}${surefire.forkNumber}</databaseUri>
+						<saveScriptsToFile>true</saveScriptsToFile>
+						<loadDdlScriptFromFile>false</loadDdlScriptFromFile>
+						<loadDataScriptFromFile>false</loadDataScriptFromFile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.20.1</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>**/*Test*.java</include>
+					</includes>
+					<forkCount>${fork.count}</forkCount>
+					<reuseForks>true</reuseForks>
+					<argLine>
+					    -server -Xms265m
+						-Xmx768m
+						-XX:+UseG1GC
+						-Djava.system.class.loader=ua.com.fielden.platform.classloader.TgSystemClassLoader</argLine>
+					<systemPropertyVariables>
+						<databaseUri>${databaseUri.prefix}${surefire.forkNumber}</databaseUri>
+						<saveScriptsToFile>false</saveScriptsToFile>
+						<loadDdlScriptFromFile>true</loadDdlScriptFromFile>
+						<loadDataScriptFromFile>true</loadDataScriptFromFile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+</project>

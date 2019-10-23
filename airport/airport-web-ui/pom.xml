@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>helsinki</groupId>
+		<artifactId>airport</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>airport-web-ui</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Helsinki Airport Asset Management UI Module</name>
+	<description>A module, which provides all UI related configurations such as main menu items, entity centres, masters and actions.</description>
+	
+	<dependencies>
+		<!-- inter module dependencies -->
+		<dependency>
+			<groupId>helsinki</groupId>
+			<artifactId>airport-pojo-bl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<!-- TG platform dependency -->
+		<dependency>
+			<groupId>fielden</groupId>
+			<artifactId>platform-web-ui</artifactId>
+			<version>${platform.version}</version>
+		</dependency>		
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/web</directory>
+			</resource>
+			<resource>
+				<directory>src/test/web</directory>
+				<excludes>
+					<exclude>**/*.*</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/log4j.properties</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>	
+	</build>
+</project>

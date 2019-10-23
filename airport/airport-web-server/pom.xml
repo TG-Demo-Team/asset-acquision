@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>helsinki</groupId>
+		<artifactId>airport</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>airport-web-server</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Helsinki Airport Asset Management Web Server Module</name>
+	<description>
+A module representing the web server side of the application.
+It binds together all platform core and application specific web resources in to a single standalone application server.
+</description>
+
+	<properties>
+		<staging.dir>${project.build.directory}</staging.dir>
+		<client.staging.dir>${project.parent.basedir}/airport-web-client/target</client.staging.dir>
+	</properties>
+
+	<dependencies>
+		<!-- inner module dependencies -->
+		<dependency>
+			<groupId>helsinki</groupId>
+			<artifactId>airport-dao</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>helsinki</groupId>
+			<artifactId>airport-web-ui</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- other dependencies, including third party libs -->
+		<dependency>
+			<groupId>fielden</groupId>
+			<artifactId>platform-web-resources</artifactId>
+			<version>${platform.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/log4j.xml</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id> <!-- copy all dependencies into the deployment directory structure -->
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${staging.dir}/deployment/lib</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${staging.dir}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-packaged-module</id><!-- self copy into the lib dir with the 
+							rest of dependencies -->
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${staging.dir}/deployment/lib</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}</directory>
+									<includes>
+										<include>${project.artifactId}-${project.version}.jar</include>
+									</includes>
+								</resource>
+							</resources>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>copy-client-dependencies</id><!-- copies client application dependencies 
+							to be included into the server deployment -->
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${staging.dir}/deployment/client/dependencies</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${client.staging.dir}/dependencies</directory>
+									<excludes>
+										<exclude>platform-application-bootstrap-${platform.version}-distribution.jar</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-server-launch-script-and-app-properties</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${staging.dir}/deployment</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/</directory>
+									<includes>
+										<include>start-server.sh</include>
+										<include>start-server.bat</include>
+										<include>log4j.xml</include>
+										<include>application.properties</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- Provides a development H2 database as part of server deployment, 
+							which this is purely a convenience in order to enable one click server deployment. 
+							However, it is usable only for quick testing of the server deployment - not 
+							for production use. A production ready database such as PostgrSQL or Oracle 
+							should be used for proper deployment. -->
+						<id>copy-h2-development-db</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${staging.dir}/deployment/db</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/db</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-attachment-for-deployment</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<echo>Creating directory for attachments...</echo>
+								<mkdir dir="${staging.dir}/deployment/attachments" />
+								<echo>Making server startup script executable...</echo>
+								<chmod file="${staging.dir}/deployment/start-server.sh" perm="ugo+rx"/>								
+ 
+								<echo>Archiving application server distribution...</echo>
+								<zip destfile="${staging.dir}/${project.artifactId}-${project.version}-distribution.zip">
+							        <zipfileset dir="${staging.dir}/deployment"/>
+							    </zip>
+								
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
