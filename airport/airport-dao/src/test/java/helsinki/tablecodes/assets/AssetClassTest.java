@@ -21,12 +21,15 @@ import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.selec
 import static ua.com.fielden.platform.utils.EntityUtils.fetch;
 
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import ua.com.fielden.platform.dao.IEntityDao;
 import ua.com.fielden.platform.dao.QueryExecutionModel;
+import ua.com.fielden.platform.entity.meta.MetaProperty;
 import ua.com.fielden.platform.entity.query.fluent.fetch;
 import ua.com.fielden.platform.entity.query.model.EntityResultQueryModel;
 import ua.com.fielden.platform.entity.query.model.OrderingModel;
@@ -83,6 +86,78 @@ public class AssetClassTest extends AbstractDaoTestCase {
         final AssetClass ac3 = co(AssetClass.class).findByKey("AC3");
         assertNotNull(ac3);
         assertEquals("AC3", ac3.getName());
+    }
+
+
+    @Test
+    public void persistent_predicates_on_abstract_entities() {
+        final AssetClass ac1 = co(AssetClass.class).findByKey("AC1");
+        assertNotNull(ac1);
+        assertEquals("AC1", ac1.getKey().toString());
+        
+        assertTrue(ac1.isPersistent());
+        assertTrue(ac1.isPersisted());
+                
+        final IAssetClass coAssetClass = co(AssetClass.class);
+        final AssetClass newAc3 = (AssetClass) coAssetClass.new_().setName("AC3");
+        newAc3.setDesc("some value");
+
+        assertTrue(newAc3.isPersistent());
+        assertFalse(newAc3.isPersisted());
+        
+        final AssetClass ac3 = co(AssetClass.class).save(newAc3);
+        assertTrue(ac3.isPersisted());
+    }
+
+
+    @Test
+    public void dirty_and_valid_predicates_on_abstract_entities() {
+        final AssetClass ac1 = co$(AssetClass.class).findByKey("AC1");
+        assertNotNull(ac1);
+        assertEquals("AC1", ac1.getKey().toString());
+        
+        assertFalse(ac1.isDirty());
+        assertTrue(ac1.isValid().isSuccessful());
+        
+        ac1.setName("AC1");
+        assertFalse(ac1.isDirty());
+
+        ac1.setName("AC42");
+        assertTrue(ac1.isDirty());
+        
+        ac1.setName("AC1");
+        assertFalse(ac1.isDirty());
+        
+        final AssetClass ac42 = co$(AssetClass.class).save(ac1.setName("AC42"));
+        assertFalse(ac42.isDirty());
+        ac42.setName("AC1");
+        assertTrue(ac42.isDirty());
+    }
+    
+    @Test
+    public void meta_property_for_uninstrumented_instances_do_not_exist() {
+        final AssetClass ac1 = co(AssetClass.class).findByKey("AC1");
+        assertFalse(ac1.getPropertyOptionally("name").isPresent());
+        
+        final String ac1Title = ac1.getPropertyOptionally("name").map(mp -> mp.getTitle()).orElse("no title");
+        assertEquals("no title", ac1Title);        
+        
+        final AssetClass ac1inst = co$(AssetClass.class).findByKey("AC1");
+        assertTrue(ac1inst.getPropertyOptionally("name").isPresent());
+        
+        final String ac1instTitle = ac1inst.getPropertyOptionally("name").map(mp -> mp.getTitle()).orElse("no title");
+        assertNotEquals("no title", ac1instTitle);        
+    }
+
+    @Test
+    public void can_find_dirty_properties() {
+        final AssetClass ac1 = co$(AssetClass.class).findByKey("AC1");
+        ac1.setName("AC42");
+        
+        final Set<MetaProperty<?>> dirtyProps = ac1.getProperties().values().stream()
+                .filter(mp -> mp.isDirty()).collect(Collectors.toSet());
+        assertEquals(1, dirtyProps.size());
+        dirtyProps.forEach(System.out::println);
     }
 
     @Override
