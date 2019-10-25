@@ -51,30 +51,38 @@ public class AssetClassTest extends AbstractDaoTestCase {
 
     @Test
     public void there_is_only_one_instance_ending_with_2() {
+        assertTrue(co(AssetClass.class).count(select(AssetClass.class).where().prop("name").like().val("%2").model()) == 1);
+    }
+
+    @Test
+    public void there_is_only_one_instance_ending_with_2_even_if_conditioning_key() {
         assertTrue(co(AssetClass.class).count(select(AssetClass.class).where().prop("key").like().val("%2").model()) == 1);
     }
 
     
     @Test
-    @Ignore
     public void some_random_operations() {
         final AssetClass ac1 = co(AssetClass.class).findByKey("AC1");
         assertNotNull(ac1);
-        assertEquals("AC1", ac1.getKey());
+        assertEquals("AC1", ac1.getKey().toString());
         
         final IAssetClass coAssetClass = co(AssetClass.class);
-        final AssetClass newAc3 = (AssetClass) coAssetClass.new_().setKey("AC3");
+        final AssetClass newAc3 = (AssetClass) coAssetClass.new_().setName("AC3");
+        System.out.println(newAc3.getDesc());
+        System.out.println(newAc3.getProperty("desc").getTitle());
         
         newAc3.setDesc("some value");
         newAc3.setDesc(null);
         
-        assertTrue(newAc3.getProperty("desc").isValid());
+        assertFalse(newAc3.getProperty("desc").isValid());
+        assertEquals("some value", newAc3.getDesc());
         
+        newAc3.setDesc("some value");
         co(AssetClass.class).save(newAc3);
         
         final AssetClass ac3 = co(AssetClass.class).findByKey("AC3");
         assertNotNull(ac3);
-        assertEquals("AC3", ac3.getKey());
+        assertEquals("AC3", ac3.getName());
     }
 
     @Override
@@ -104,8 +112,8 @@ public class AssetClassTest extends AbstractDaoTestCase {
         }
 
     	// AssetClass population for the test case
-        save(new_(AssetClass.class, "AC1", "The first asset class"));
-        save(new_(AssetClass.class, "AC2", "The second asset class"));
+        save(new_composite(AssetClass.class, "AC1").setDesc("The first asset class"));
+        save(new_composite(AssetClass.class, "AC2").setDesc("The second asset class"));
     }
 
 }

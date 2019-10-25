@@ -94,10 +94,10 @@ public class AssetClassWebUiConfig {
      * @return created entity master
      */
     private EntityMaster<AssetClass> createMaster(final Injector injector) {
-        final String layout = LayoutComposer.mkGridForMasterFitWidth(1, 2);
+        final String layout = LayoutComposer.mkGridForMasterFitWidth(2, 1);
 
         final IMaster<AssetClass> masterConfig = new SimpleMasterBuilder<AssetClass>().forEntity(AssetClass.class)
-                .addProp("key").asSinglelineText().also()
+                .addProp("name").asSinglelineText().also()
                 .addProp("desc").asMultilineText().also()
                 .addAction(MasterActions.REFRESH).shortDesc("Cancel").longDesc("Cancel action")
                 .addAction(MasterActions.SAVE)
@@ -105,7 +105,7 @@ public class AssetClassWebUiConfig {
                 .setLayoutFor(Device.DESKTOP, Optional.empty(), layout)
                 .setLayoutFor(Device.TABLET, Optional.empty(), layout)
                 .setLayoutFor(Device.MOBILE, Optional.empty(), layout)
-                .withDimensions(mkDim(LayoutComposer.SIMPLE_ONE_COLUMN_MASTER_DIM_WIDTH, 480, Unit.PX))
+                .withDimensions(mkDim(LayoutComposer.SIMPLE_ONE_COLUMN_MASTER_DIM_WIDTH, 360, Unit.PX))
                 .done();
 
         return new EntityMaster<>(AssetClass.class, masterConfig, injector);
