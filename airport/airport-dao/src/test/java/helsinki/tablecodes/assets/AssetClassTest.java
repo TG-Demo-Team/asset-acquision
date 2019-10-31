@@ -1,43 +1,24 @@
 package helsinki.tablecodes.assets;
 
-import static org.junit.Assert.*;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.cond;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.expr;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetch;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchAggregates;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchAll;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchAllAndInstrument;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchAllInclCalc;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchAllInclCalcAndInstrument;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchAndInstrument;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchIdOnly;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchKeyAndDescOnly;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchKeyAndDescOnlyAndInstrument;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchOnly;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.fetchOnlyAndInstrument;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.from;
-import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.orderBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static ua.com.fielden.platform.entity.query.fluent.EntityQueryUtils.select;
-import static ua.com.fielden.platform.utils.EntityUtils.fetch;
 
-import java.math.BigDecimal;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import ua.com.fielden.platform.dao.IEntityDao;
-import ua.com.fielden.platform.dao.QueryExecutionModel;
-import ua.com.fielden.platform.entity.meta.MetaProperty;
-import ua.com.fielden.platform.entity.query.fluent.fetch;
-import ua.com.fielden.platform.entity.query.model.EntityResultQueryModel;
-import ua.com.fielden.platform.entity.query.model.OrderingModel;
-import ua.com.fielden.platform.security.user.User;
-import ua.com.fielden.platform.utils.IUniversalConstants;
-import helsinki.personnel.Person;
 import helsinki.test_config.AbstractDaoTestCase;
 import helsinki.test_config.UniversalConstantsForTesting;
+import ua.com.fielden.platform.dao.IEntityDao;
+import ua.com.fielden.platform.entity.meta.MetaProperty;
+import ua.com.fielden.platform.utils.IUniversalConstants;
 
 /**
  * This is a test case for {@link AssetClass}.
@@ -177,6 +158,24 @@ public class AssetClassTest extends AbstractDaoTestCase {
         assertNotNull(ac42savedAgain.getLastUpdatedBy());
     }
 
+    @Test
+    public void requiredness_of_properties_defined_as_required_cannot_be_changed_at_runtime() {
+        final IEntityDao<AssetClass> co$ = co$(AssetClass.class);
+        
+        final AssetClass ac1 = co$.findByKey("AC1");
+        assertNotNull(ac1.getDesc());
+        
+        final MetaProperty<String> mpDesc = ac1.getProperty("desc");
+        assertTrue(mpDesc.isRequired());
+        
+        try {
+            mpDesc.setRequired(false);
+            fail("Changing defined requiredness at runtime shold have thrown an exception.");
+        } catch (final Exception ex) {
+        }
+    }
+
+    
     @Override
     public boolean saveDataPopulationScriptToFile() {
         return false;
@@ -205,7 +204,7 @@ public class AssetClassTest extends AbstractDaoTestCase {
 
     	// AssetClass population for the test case
         save(new_composite(AssetClass.class, "AC1").setDesc("The first asset class"));
-        save(new_composite(AssetClass.class, "AC2").setDesc("The second asset class"));
+        save(new_composite(AssetClass.class, "AC2").setDesc("The second asset class").setCriticality(3));
     }
 
 }
