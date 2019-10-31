@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import helsinki.tablecodes.validators.NoSpacesValidator;
 import helsinki.test_config.AbstractDaoTestCase;
 import helsinki.test_config.UniversalConstantsForTesting;
 import ua.com.fielden.platform.dao.IEntityDao;
@@ -43,6 +44,15 @@ public class AssetClassTest extends AbstractDaoTestCase {
         assertTrue(co(AssetClass.class).count(select(AssetClass.class).where().prop("key").like().val("%2").model()) == 1);
     }
 
+    @Test
+    public void asset_class_name_cannot_contain_spaces() {
+        final AssetClass ac1 = co$(AssetClass.class).findByKeyAndFetch(IAssetClass.FETCH_PROVIDER.fetchModel(), "AC1");
+        assertTrue(ac1.isValid().isSuccessful());
+        
+        ac1.setName("name with spaces");
+        assertFalse(ac1.isValid().isSuccessful());
+        assertEquals(NoSpacesValidator.ERR_NO_SPACES_ALLOWED, ac1.isValid().getMessage());
+    }
     
     @Test
     public void some_random_operations() {

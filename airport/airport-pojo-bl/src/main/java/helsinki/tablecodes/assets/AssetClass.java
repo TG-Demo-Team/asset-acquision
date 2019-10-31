@@ -1,5 +1,6 @@
 package helsinki.tablecodes.assets;
 
+import helsinki.tablecodes.validators.NoSpacesValidator;
 import ua.com.fielden.platform.entity.AbstractPersistentEntity;
 import ua.com.fielden.platform.entity.ActivatableAbstractEntity;
 import ua.com.fielden.platform.entity.DynamicEntityKey;
@@ -15,6 +16,8 @@ import ua.com.fielden.platform.entity.annotation.MapEntityTo;
 import ua.com.fielden.platform.entity.annotation.MapTo;
 import ua.com.fielden.platform.entity.annotation.Observable;
 import ua.com.fielden.platform.entity.annotation.Title;
+import ua.com.fielden.platform.entity.annotation.mutator.BeforeChange;
+import ua.com.fielden.platform.entity.annotation.mutator.Handler;
 import ua.com.fielden.platform.entity.validation.annotation.Final;
 import ua.com.fielden.platform.reflection.TitlesDescsGetter;
 import ua.com.fielden.platform.utils.Pair;
@@ -42,6 +45,7 @@ public class AssetClass extends ActivatableAbstractEntity<DynamicEntityKey> {
     @MapTo
     @Title(value = "Name", desc = "Asset class name")
     @CompositeKeyMember(1)
+    @BeforeChange(@Handler(NoSpacesValidator.class))
     private String name;
 
     @IsProperty
