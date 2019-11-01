@@ -9,6 +9,7 @@ import ua.com.fielden.platform.entity.annotation.CompositeKeyMember;
 import ua.com.fielden.platform.entity.annotation.MapEntityTo;
 import ua.com.fielden.platform.entity.annotation.MapTo;
 import ua.com.fielden.platform.entity.annotation.Observable;
+import ua.com.fielden.platform.entity.annotation.Readonly;
 import ua.com.fielden.platform.entity.annotation.Title;
 import ua.com.fielden.platform.entity.annotation.DescTitle;
 import ua.com.fielden.platform.entity.annotation.DisplayDescription;
@@ -40,6 +41,7 @@ public class Asset extends ActivatableAbstractEntity<DynamicEntityKey> {
     @MapTo
     @Title(value = "Number", desc = "A unique asset number, auto-generated.")
     @CompositeKeyMember(1)
+    @Readonly
     private String number;
 
     @Observable
