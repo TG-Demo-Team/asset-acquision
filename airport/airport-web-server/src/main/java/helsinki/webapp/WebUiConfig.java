@@ -4,7 +4,9 @@ import org.apache.commons.lang.StringUtils;
 
 import helsinki.config.personnel.PersonWebUiConfig;
 import helsinki.tablecodes.assets.AssetClass;
+import helsinki.tablecodes.assets.AssetType;
 import helsinki.webapp.config.tablecodes.assets.AssetClassWebUiConfig;
+import helsinki.webapp.config.tablecodes.assets.AssetTypeWebUiConfig;
 import ua.com.fielden.platform.basic.config.Workflows;
 import ua.com.fielden.platform.web.app.config.IWebUiBuilder;
 import ua.com.fielden.platform.web.interfaces.ILayout.Device;
@@ -72,6 +74,7 @@ public class WebUiConfig extends AbstractWebUiConfig {
         
         // Asset table codes
         final AssetClassWebUiConfig assetClassWebUiConfig = AssetClassWebUiConfig.register(injector(), builder);
+        final AssetTypeWebUiConfig assetTypeWebUiConfig = AssetTypeWebUiConfig.register(injector(), builder);
 
 
         // Configure application web resources such as masters and centres
@@ -95,6 +98,8 @@ public class WebUiConfig extends AbstractWebUiConfig {
                 .addMenuItem("Asset Table Codes").description("Various master data for assets.")
                     .addMenuItem(AssetClass.ENTITY_TITLE).description(String.format("%s Centre", AssetClass.ENTITY_TITLE))
                     .centre(assetClassWebUiConfig.centre).done()
+                    .addMenuItem(AssetType.ENTITY_TITLE).description(String.format("%s Centre", AssetType.ENTITY_TITLE))
+                    .centre(assetTypeWebUiConfig.centre).done()
                 .done()
                 .addMenuItem("Personnel").description("Personnel related data")
                     .addMenuItem("Personnel").description("Personnel Centre").centre(personWebUiConfig.centre).done()

@@ -11,6 +11,7 @@ import ua.com.fielden.platform.basic.config.IApplicationDomainProvider;
 import ua.com.fielden.platform.domain.PlatformDomainTypes;
 import ua.com.fielden.platform.entity.AbstractEntity;
 import helsinki.tablecodes.assets.AssetClass;
+import helsinki.tablecodes.assets.AssetType;
 
 /**
  * A class to register domain entities.
@@ -26,6 +27,7 @@ public class ApplicationDomain implements IApplicationDomainProvider {
         entityTypes.addAll(PlatformDomainTypes.types);
         add(Person.class);
         add(AssetClass.class);
+        add(AssetType.class);
     }
 
     private static void add(final Class<? extends AbstractEntity<?>> domainType) {
