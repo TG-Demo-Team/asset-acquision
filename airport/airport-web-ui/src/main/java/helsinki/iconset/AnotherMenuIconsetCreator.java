@@ -7,13 +7,13 @@ import ua.com.fielden.platform.svg.combining.IronIconsetUtility;
 /**
  * Generates an iconset resource with images for the main application menu.
  */
-public class MenuIconsetCreator {
+public class AnotherMenuIconsetCreator {
 
     public static void main(final String[] args) throws IOException {
-        final String srcFolder= "src/main/resources/images_menu";
-        final String iconsetId = "mainMenu";
+        final String srcFolder= "src/main/resources/another_images";
+        final String iconsetId = "anotherMainMenu";
         final int svgWidth = 1000;
-        final String outputFile = "src/main/resources/main-menu.js";
+        final String outputFile = "src/main/resources/another-main-menu.js";
         final IronIconsetUtility iconsetUtility = new IronIconsetUtility(iconsetId, svgWidth, srcFolder);
         iconsetUtility.createSvgIconset(outputFile);
         System.out.println("Finished");

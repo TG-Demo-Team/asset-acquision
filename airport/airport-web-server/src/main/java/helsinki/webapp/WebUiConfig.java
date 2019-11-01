@@ -89,10 +89,37 @@ public class WebUiConfig extends AbstractWebUiConfig {
 
         // Configure application menu
         configDesktopMainMenu().
+        addModule("Asset Acquisition").
+            description("Asset Acquisition Description").
+            icon("mainMenu:equipment").
+            detailIcon("mainMenu:equipment").
+            bgColor("#FFE680").
+            captionBgColor("#FFD42A").menu()
+            .addMenuItem("Asset Table Codes").description("Various master data for assets.")
+                .addMenuItem(AssetClass.ENTITY_TITLE).description(String.format("%s Centre", AssetClass.ENTITY_TITLE))
+                .centre(assetClassWebUiConfig.centre).done()
+                .addMenuItem(AssetType.ENTITY_TITLE).description(String.format("%s Centre", AssetType.ENTITY_TITLE))
+                .centre(assetTypeWebUiConfig.centre).done()
+            .done().
+        done().done().
             addModule("Users / Personnel").
                 description("Provides functionality for managing application security and personnel data.").
                 icon("mainMenu:help").
-                detailIcon("mainMenu:help").
+                detailIcon("anotherMainMenu:about").
+                bgColor("#FFE680").
+                captionBgColor("#FFD42A").menu()
+                .addMenuItem("Personnel").description("Personnel related data")
+                    .addMenuItem("Personnel").description("Personnel Centre").centre(personWebUiConfig.centre).done()
+                .done()
+                .addMenuItem("Users").description("Users related data")
+                    .addMenuItem("Users").description("User centre").centre(userWebUiConfig.centre).done()
+                    .addMenuItem("User Roles").description("User roles centre").centre(userRoleWebUiConfig.centre).done()
+                .done().
+            done().done().
+            addModule("Table Codes").
+                description("Table Codes Description").
+                icon("mainMenu:tablecodes").
+                detailIcon("mainMenu:tablecodes").
                 bgColor("#FFE680").
                 captionBgColor("#FFD42A").menu()
                 .addMenuItem("Asset Table Codes").description("Various master data for assets.")
@@ -100,18 +127,11 @@ public class WebUiConfig extends AbstractWebUiConfig {
                     .centre(assetClassWebUiConfig.centre).done()
                     .addMenuItem(AssetType.ENTITY_TITLE).description(String.format("%s Centre", AssetType.ENTITY_TITLE))
                     .centre(assetTypeWebUiConfig.centre).done()
-                .done()
-                .addMenuItem("Personnel").description("Personnel related data")
-                    .addMenuItem("Personnel").description("Personnel Centre").centre(personWebUiConfig.centre).done()
-                .done()
-                .addMenuItem("Users").description("Users related data")
-                    .addMenuItem("Users").description("User centre").centre(userWebUiConfig.centre).done()
-                    .addMenuItem("User Roles").description("User roles centre").centre(userRoleWebUiConfig.centre).done()
-                .done()
-            .done().done()
-        .setLayoutFor(Device.DESKTOP, null, "[[[]]]")
-        .setLayoutFor(Device.TABLET, null, "[[[]]]")
-        .setLayoutFor(Device.MOBILE, null, "[[[]]]")
+                .done().
+            done().done()
+        .setLayoutFor(Device.DESKTOP, null, "[[[{\"rowspan\":2}], []], [[]]]")
+        .setLayoutFor(Device.TABLET, null,  "[[[{\"rowspan\":2}], []], [[]]]")
+        .setLayoutFor(Device.MOBILE, null, "[[[]],[[]], [[]]]")
         .minCellWidth(100).minCellHeight(148).done();
     }
 
