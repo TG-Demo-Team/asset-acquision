@@ -1,6 +1,5 @@
-package helsinki.tablecodes.assets;
+package helsinki.assets;
 
-import ua.com.fielden.platform.entity.AbstractEntity;
 import ua.com.fielden.platform.entity.ActivatableAbstractEntity;
 import ua.com.fielden.platform.entity.DynamicEntityKey;
 import ua.com.fielden.platform.entity.annotation.KeyType;
@@ -25,54 +24,32 @@ import ua.com.fielden.platform.utils.Pair;
  *
  */
 @KeyType(DynamicEntityKey.class)
-@KeyTitle("Asset Type")
-@CompanionObject(IAssetType.class)
+@KeyTitle("Asset Number")
+@CompanionObject(IAsset.class)
 @MapEntityTo
 @DescTitle("Description")
 @DisplayDescription
 @DescRequired
-public class AssetType extends ActivatableAbstractEntity<DynamicEntityKey> {
+public class Asset extends ActivatableAbstractEntity<DynamicEntityKey> {
 
-    private static final Pair<String, String> entityTitleAndDesc = TitlesDescsGetter.getEntityTitleAndDesc(AssetType.class);
+    private static final Pair<String, String> entityTitleAndDesc = TitlesDescsGetter.getEntityTitleAndDesc(Asset.class);
     public static final String ENTITY_TITLE = entityTitleAndDesc.getKey();
     public static final String ENTITY_DESC = entityTitleAndDesc.getValue();
-
+    
     @IsProperty
     @MapTo
-    @Title("Name")
+    @Title(value = "Number", desc = "A unique asset number, auto-generated.")
     @CompositeKeyMember(1)
-    private String name;
-
-    @IsProperty
-    @MapTo
-    @Title(value = "Asset Class", desc = "The class of this asset type.")
-    private AssetClass assetClass;
+    private String number;
 
     @Observable
-    public AssetType setAssetClass(final AssetClass assetClass) {
-        this.assetClass = assetClass;
+    public Asset setNumber(final String number) {
+        this.number = number;
         return this;
     }
 
-    public AssetClass getAssetClass() {
-        return assetClass;
-    }
-
-    @Observable
-    public AssetType setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    @Observable
-    public AssetType setDesc(String desc) {
-        super.setDesc(desc);
-        return this;
+    public String getNumber() {
+        return number;
     }
 
 }

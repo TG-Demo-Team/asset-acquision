@@ -2,9 +2,11 @@ package helsinki.webapp;
 
 import org.apache.commons.lang.StringUtils;
 
+import helsinki.assets.Asset;
 import helsinki.config.personnel.PersonWebUiConfig;
 import helsinki.tablecodes.assets.AssetClass;
 import helsinki.tablecodes.assets.AssetType;
+import helsinki.webapp.config.assets.AssetWebUiConfig;
 import helsinki.webapp.config.tablecodes.assets.AssetClassWebUiConfig;
 import helsinki.webapp.config.tablecodes.assets.AssetTypeWebUiConfig;
 import ua.com.fielden.platform.basic.config.Workflows;
@@ -75,6 +77,9 @@ public class WebUiConfig extends AbstractWebUiConfig {
         // Asset table codes
         final AssetClassWebUiConfig assetClassWebUiConfig = AssetClassWebUiConfig.register(injector(), builder);
         final AssetTypeWebUiConfig assetTypeWebUiConfig = AssetTypeWebUiConfig.register(injector(), builder);
+        
+        // Asset
+        final AssetWebUiConfig assetWebUiConfig = AssetWebUiConfig.register(injector(), builder);
 
 
         // Configure application web resources such as masters and centres
@@ -90,18 +95,14 @@ public class WebUiConfig extends AbstractWebUiConfig {
         // Configure application menu
         configDesktopMainMenu().
         addModule("Asset Acquisition").
-            description("Asset Acquisition Description").
+            description("Asset acquisition module").
             icon("mainMenu:equipment").
             detailIcon("mainMenu:equipment").
             bgColor("#FFE680").
             captionBgColor("#FFD42A").menu()
-            .addMenuItem("Asset Table Codes").description("Various master data for assets.")
-                .addMenuItem(AssetClass.ENTITY_TITLE).description(String.format("%s Centre", AssetClass.ENTITY_TITLE))
-                .centre(assetClassWebUiConfig.centre).done()
-                .addMenuItem(AssetType.ENTITY_TITLE).description(String.format("%s Centre", AssetType.ENTITY_TITLE))
-                .centre(assetTypeWebUiConfig.centre).done()
-            .done().
-        done().done().
+                .addMenuItem(Asset.ENTITY_TITLE).description(String.format("%s Centre", Asset.ENTITY_TITLE))
+                .centre(assetWebUiConfig.centre).done()
+                .done().done().
             addModule("Users / Personnel").
                 description("Provides functionality for managing application security and personnel data.").
                 icon("mainMenu:help").
