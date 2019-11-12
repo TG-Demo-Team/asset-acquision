@@ -1,31 +1,31 @@
 package helsinki.webapp.config.tablecodes.assets;
 
-import static java.lang.String.format;
 import static helsinki.common.StandardScrollingConfigs.standardStandaloneScrollingConfig;
+import static java.lang.String.format;
+import static ua.com.fielden.platform.web.PrefDim.mkDim;
 
 import java.util.Optional;
 
 import com.google.inject.Injector;
 
-import helsinki.tablecodes.assets.AssetClass;
-import helsinki.tablecodes.assets.AssetType;
 import helsinki.common.LayoutComposer;
 import helsinki.common.StandardActions;
-
-import ua.com.fielden.platform.web.interfaces.ILayout.Device;
+import helsinki.main.menu.tablecodes.assets.MiAssetType;
+import helsinki.tablecodes.assets.AssetClass;
+import helsinki.tablecodes.assets.AssetType;
+import helsinki.tablecodes.assets.producers.AssetTypeProducer;
+import ua.com.fielden.platform.web.PrefDim.Unit;
 import ua.com.fielden.platform.web.action.CentreConfigurationWebUiConfig.CentreConfigActions;
+import ua.com.fielden.platform.web.app.config.IWebUiBuilder;
+import ua.com.fielden.platform.web.centre.EntityCentre;
 import ua.com.fielden.platform.web.centre.api.EntityCentreConfig;
 import ua.com.fielden.platform.web.centre.api.actions.EntityActionConfig;
 import ua.com.fielden.platform.web.centre.api.impl.EntityCentreBuilder;
+import ua.com.fielden.platform.web.interfaces.ILayout.Device;
+import ua.com.fielden.platform.web.view.master.EntityMaster;
+import ua.com.fielden.platform.web.view.master.api.IMaster;
 import ua.com.fielden.platform.web.view.master.api.actions.MasterActions;
 import ua.com.fielden.platform.web.view.master.api.impl.SimpleMasterBuilder;
-import ua.com.fielden.platform.web.view.master.api.IMaster;
-import ua.com.fielden.platform.web.app.config.IWebUiBuilder;
-import helsinki.main.menu.tablecodes.assets.MiAssetType;
-import ua.com.fielden.platform.web.centre.EntityCentre;
-import ua.com.fielden.platform.web.view.master.EntityMaster;
-import static ua.com.fielden.platform.web.PrefDim.mkDim;
-import ua.com.fielden.platform.web.PrefDim.Unit;
 /**
  * {@link AssetType} Web UI configuration.
  *
@@ -117,6 +117,6 @@ public class AssetTypeWebUiConfig {
                 .withDimensions(mkDim(LayoutComposer.SIMPLE_ONE_COLUMN_MASTER_DIM_WIDTH, 480, Unit.PX))
                 .done();
 
-        return new EntityMaster<>(AssetType.class, masterConfig, injector);
+        return new EntityMaster<>(AssetType.class, AssetTypeProducer.class, masterConfig, injector);
     }
 }
