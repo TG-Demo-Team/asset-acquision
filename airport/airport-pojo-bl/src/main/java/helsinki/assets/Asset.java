@@ -1,5 +1,6 @@
 package helsinki.assets;
 
+import ua.com.fielden.platform.entity.AbstractEntity;
 import ua.com.fielden.platform.entity.ActivatableAbstractEntity;
 import ua.com.fielden.platform.entity.DynamicEntityKey;
 import ua.com.fielden.platform.entity.annotation.KeyType;
@@ -36,13 +37,20 @@ public class Asset extends ActivatableAbstractEntity<DynamicEntityKey> {
     private static final Pair<String, String> entityTitleAndDesc = TitlesDescsGetter.getEntityTitleAndDesc(Asset.class);
     public static final String ENTITY_TITLE = entityTitleAndDesc.getKey();
     public static final String ENTITY_DESC = entityTitleAndDesc.getValue();
-    
+
     @IsProperty
     @MapTo
     @Title(value = "Number", desc = "A unique asset number, auto-generated.")
     @CompositeKeyMember(1)
     @Readonly
     private String number;
+
+    @Override
+    @Observable
+    public Asset setDesc(final String desc) {
+        super.setDesc(desc);
+        return this;
+    }
 
     @Observable
     public Asset setNumber(final String number) {
