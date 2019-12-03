@@ -6,15 +6,15 @@ import java.io.FileInputStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
-
 import helsinki.config.ApplicationDomain;
 import helsinki.personnel.Person;
-
+import helsinki.tablecodes.assets.AssetClass;
+import helsinki.tablecodes.assets.AssetType;
 import ua.com.fielden.platform.devdb_support.DomainDrivenDataPopulation;
 import ua.com.fielden.platform.entity.AbstractEntity;
 import ua.com.fielden.platform.persistence.HibernateUtil;
@@ -79,6 +79,10 @@ public class PopulateDb extends DomainDrivenDataPopulation {
         
         setupUser(User.system_users.SU, "helsinki");
         setupPerson(User.system_users.SU, "helsinki");
+        
+        final AssetClass as1 = save(new_(AssetClass.class).setName("AC1").setDesc("First description.").setActive(true));
+        save(new_(AssetClass.class).setName("AC2").setDesc("First description."));
+        save(new_(AssetType.class).setName("AT1").setDesc("First description.").setAssetClass(as1));
 
         LOGGER.info("Completed database creation and population.");
 	}

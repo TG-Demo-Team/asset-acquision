@@ -47,8 +47,10 @@ public abstract class AbstractDaoTestCase extends AbstractDomainDrivenTestCase {
     }
     
     private void setupPerson(final User.system_users defaultUser, final String emailDomain) {
-        final User su = co(User.class).findByKey(defaultUser.name());
-        save(new_(Person.class, defaultUser.name()).setActive(true).setUser(su).setDesc("Person who is a user").setEmail(defaultUser + "@" + emailDomain));
+        if (!useSavedDataPopulationScript()) {
+            final User su = co(User.class).findByKey(defaultUser.name());
+            save(new_(Person.class, defaultUser.name()).setActive(true).setUser(su).setDesc("Person who is a user").setEmail(defaultUser + "@" + emailDomain));
+        }
     }
 
 }

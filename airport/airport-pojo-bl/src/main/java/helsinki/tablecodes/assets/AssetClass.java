@@ -48,8 +48,8 @@ public class AssetClass extends ActivatableAbstractEntity<DynamicEntityKey> {
     @Title(value = "Name", desc = "Asset class name")
     @CompositeKeyMember(1)
     @BeforeChange({
-        @Handler(NoSpacesValidator.class),
-        @Handler(value = LongerThanValidator.class, integer = @IntParam(name = "minLength", value = 3))})
+            @Handler(NoSpacesValidator.class),
+            @Handler(value = LongerThanValidator.class, integer = @IntParam(name = "minLength", value = 3)) })
     @UpperCase
     private String name;
 
@@ -68,7 +68,7 @@ public class AssetClass extends ActivatableAbstractEntity<DynamicEntityKey> {
     public Integer getCriticality() {
         return criticality;
     }
-    
+
     @Observable
     public AssetClass setName(final String name) {
         this.name = name;
@@ -83,6 +83,13 @@ public class AssetClass extends ActivatableAbstractEntity<DynamicEntityKey> {
     @Observable
     public AssetClass setDesc(String desc) {
         super.setDesc(desc);
+        return this;
+    }
+
+    @Override
+    @Observable
+    public AssetClass setActive(boolean active) {
+        super.setActive(active);
         return this;
     }
 }
