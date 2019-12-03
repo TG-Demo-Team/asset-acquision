@@ -1,5 +1,7 @@
 package helsinki.assets;
 
+import static helsinki.assets.AssetDao.ERR_FAILED_SAVE;
+import static helsinki.assets.IAsset.DEFAULT_ASSET_NUMBER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -74,11 +76,11 @@ public class AssetTest extends AbstractDaoTestCase {
             co$.saveWithError(asset);
             fail("Should have failed the first saving attempt.");
         } catch (final Result ex) {
-            assertEquals(AssetDao.ERR_FAILED_SAVE, ex.getMessage());
+            assertEquals(ERR_FAILED_SAVE, ex.getMessage());
         }
         
         assertFalse(asset.isPersisted());
-        assertEquals("1", asset.getNumber());
+        assertEquals(DEFAULT_ASSET_NUMBER, asset.getNumber());
         
         final Asset savedAsset = co$.save(asset);
         assertTrue(savedAsset.isPersisted());
@@ -96,12 +98,12 @@ public class AssetTest extends AbstractDaoTestCase {
             co$.saveWithError(assetByUser1);
             fail("Should have failed the first saving attempt.");
         } catch (final Result ex) {
-            assertEquals(AssetDao.ERR_FAILED_SAVE, ex.getMessage());
+            assertEquals(ERR_FAILED_SAVE, ex.getMessage());
         }
         
         assertFalse(assetByUser1.isPersisted());
         assertFalse(co$.entityExists(assetByUser1));
-        assertEquals("1", assetByUser1.getNumber());
+        assertEquals(DEFAULT_ASSET_NUMBER, assetByUser1.getNumber());
         
         // another user saves some asset concurrently
         final Asset assetSavedByUser2 = co$.save(co$.new_().setDesc("another new desc"));

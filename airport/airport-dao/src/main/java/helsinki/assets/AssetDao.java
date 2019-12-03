@@ -22,8 +22,9 @@ import ua.com.fielden.platform.keygen.KeyNumber;
  */
 @EntityType(Asset.class)
 public class AssetDao extends CommonEntityDao<Asset> implements IAsset {
-    public static final String DEFAULT_ASSET_NUMBER = "NEXT NUMBER WILL BE GENERATED UPON SAVE";
     public static final String ERR_FAILED_SAVE = "Deliberate save exception.";
+
+    private boolean throwExceptionForTestingPurposes = false;
 
     @Inject
     public AssetDao(final IFilter filter) {
@@ -33,20 +34,42 @@ public class AssetDao extends CommonEntityDao<Asset> implements IAsset {
     @Override
     @SessionRequired
     public Asset save(final Asset asset) {
-        // TODO implement a solution for a failed transaction where ID was already assigned
-        if (!asset.isPersisted()) {
-            final IKeyNumber coKeyNumber = co(KeyNumber.class);
-            final Integer nextNumber = coKeyNumber.nextNumber("ASSET_NUMBER");
-            asset.setNumber(nextNumber.toString());
+        final boolean wasPersisted = asset.isPersisted();
+        try {
+            if (!wasPersisted) {
+                final IKeyNumber coKeyNumber = co(KeyNumber.class);
+                final Integer nextNumber = coKeyNumber.nextNumber("ASSET_NUMBER");
+                asset.setNumber(nextNumber.toString());
+            }
+
+            // save asset
+            final Asset savedAsset = super.save(asset);
+
+            // simulating a situation with an exception for testing purposes
+            if (throwExceptionForTestingPurposes) {
+                throw Result.failure(ERR_FAILED_SAVE);
+            }
+
+            // if no exception occurred then simply return the saved instance
+            return savedAsset;
+        } catch (final Exception ex) {
+            // if there was an exception when saving a new asset we need reset the value of its number to the default value
+            if (!wasPersisted) {
+                asset.setNumber(DEFAULT_ASSET_NUMBER);
+            }
+            // and re-throw the exception
+            throw ex;
         }
-        
-        return super.save(asset);
     }
     
     @SessionRequired
     public Asset saveWithError(final Asset asset) {
-        save(asset);
-        throw Result.failure(ERR_FAILED_SAVE);
+        throwExceptionForTestingPurposes = true;
+        try {
+            return save(asset);
+        } finally {
+            throwExceptionForTestingPurposes = false;
+        }
     }
 
     @Override
