@@ -24,7 +24,7 @@ import ua.com.fielden.platform.utils.Pair;
  *
  */
 @KeyType(Asset.class)
-@KeyTitle("Key")
+@KeyTitle("Asset")
 @CompanionObject(IAssetFinDet.class)
 @MapEntityTo
 public class AssetFinDet extends AbstractPersistentEntity<Asset> {
