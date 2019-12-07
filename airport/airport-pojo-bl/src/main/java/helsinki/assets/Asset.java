@@ -44,6 +44,20 @@ public class Asset extends ActivatableAbstractEntity<DynamicEntityKey> {
     @CompositeKeyMember(1)
     @Readonly
     private String number;
+    
+    @IsProperty
+    @Title(value = "Fin Det", desc = "Financial details for this asset")
+    private AssetFinDet finDet;
+
+    @Observable
+    public Asset setFinDet(final AssetFinDet finDet) {
+        this.finDet = finDet;
+        return this;
+    }
+
+    public AssetFinDet getFinDet() {
+        return finDet;
+    }
 
     @Override
     @Observable
