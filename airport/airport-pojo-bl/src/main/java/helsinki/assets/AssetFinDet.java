@@ -5,6 +5,7 @@ import java.util.Date;
 import ua.com.fielden.platform.entity.AbstractEntity;
 import ua.com.fielden.platform.entity.AbstractPersistentEntity;
 import ua.com.fielden.platform.entity.annotation.CompanionObject;
+import ua.com.fielden.platform.entity.annotation.DateOnly;
 import ua.com.fielden.platform.entity.annotation.IsProperty;
 import ua.com.fielden.platform.entity.annotation.KeyTitle;
 import ua.com.fielden.platform.entity.annotation.KeyType;
@@ -24,7 +25,7 @@ import ua.com.fielden.platform.utils.Pair;
  *
  */
 @KeyType(Asset.class)
-@KeyTitle("Key")
+@KeyTitle("Asset")
 @CompanionObject(IAssetFinDet.class)
 @MapEntityTo
 public class AssetFinDet extends AbstractPersistentEntity<Asset> {
@@ -44,6 +45,7 @@ public class AssetFinDet extends AbstractPersistentEntity<Asset> {
     private Money initCost;
 
     @IsProperty
+    @DateOnly
     @MapTo
     @Title(value = "Acquire Date", desc = "The date when asset was made or purchased")
     private Date acquireDate;
