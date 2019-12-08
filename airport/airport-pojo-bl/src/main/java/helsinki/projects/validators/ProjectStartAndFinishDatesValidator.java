@@ -32,7 +32,9 @@ public class ProjectStartAndFinishDatesValidator extends AbstractBeforeChangeEve
         final Date startDate = "startDate".equals(property.getName()) ? newValue : project.getStartDate();
         final Date finishDate = "finishDate".equals(property.getName()) ? newValue : project.getFinishDate();
         
-        final IWhere0<AssetFinDet> partialQuery = select(AssetFinDet.class).where().prop("project").eq().val(project).and();
+        final IWhere0<AssetFinDet> partialQuery = select(AssetFinDet.class).where()
+                .prop("project").eq().val(project).and()
+                .prop("acquireDate").isNotNull().and();
         final EntityResultQueryModel<AssetFinDet> query;
         if (finishDate == null) {
             query = partialQuery.prop("acquireDate").lt().val(startDate).model();
