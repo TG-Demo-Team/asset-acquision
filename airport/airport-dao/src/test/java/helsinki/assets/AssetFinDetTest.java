@@ -137,6 +137,48 @@ public class AssetFinDetTest extends AbstractDaoTestCase {
         }
     }
 
+    @Test
+    public void empty_acquire_date_is_defaulted_to_project_start_date_upon_project_assignment() {
+        final Asset asset = save(new_(Asset.class).setDesc("a demo asset"));
+        final AssetFinDet finDet = co$(AssetFinDet.class).findById(asset.getId(), IAssetFinDet.FETCH_PROVIDER.fetchModel());
+        assertNull(finDet.getAcquireDate());
+        assertNull(finDet.getProject());
+        
+        final Project project = save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project description"));
+        finDet.setProject(project);
+        assertEquals(date("2019-12-08 00:00:00"), finDet.getAcquireDate());
+    }
+
+    @Test
+    public void non_empty_acquire_date_is_not_changed_to_project_start_date_upon_project_assignment() {
+        final Asset asset = save(new_(Asset.class).setDesc("a demo asset"));
+        final AssetFinDet finDet = save(co$(AssetFinDet.class).findById(asset.getId(), IAssetFinDet.FETCH_PROVIDER.fetchModel()).setAcquireDate(date("2019-12-10 00:00:00")));
+        assertNotNull(finDet.getAcquireDate());
+        assertNull(finDet.getProject());
+        
+        final Project project = save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project description"));
+        finDet.setProject(project);
+        assertEquals(date("2019-12-10 00:00:00"), finDet.getAcquireDate());
+        assertFalse(finDet.getProperty("acquireDate").isDirty());
+    }
+
+    @Test
+    public void acquire_date_does_not_get_mutated_upon_fin_det_retrieval() {
+        final Project project = save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project description"));
+        final Asset asset = save(new_(Asset.class).setDesc("a demo asset"));
+        final AssetFinDet finDet = save(co$(AssetFinDet.class).findById(asset.getId(), IAssetFinDet.FETCH_PROVIDER.fetchModel())
+                .setAcquireDate(date("2019-12-10 00:00:00"))
+                .setProject(project));
+        assertNotNull(finDet.getAcquireDate());
+        assertNotNull(finDet.getProject());
+        
+        assertFalse(finDet.getProperty("acquireDate").isDirty());
+        assertFalse(finDet.getProperty("project").isDirty());
+        
+        assertEquals(date("2019-12-10 00:00:00"), finDet.getAcquireDate());
+        assertEquals(date("2019-12-08 00:00:00"), finDet.getProject().getStartDate());
+    }
+
     @Override
     public boolean saveDataPopulationScriptToFile() {
         return false;
