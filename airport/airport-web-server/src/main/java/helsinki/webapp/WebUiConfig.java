@@ -7,10 +7,12 @@ import org.apache.commons.lang.StringUtils;
 import helsinki.assets.Asset;
 import helsinki.assets.AssetFinDet;
 import helsinki.config.personnel.PersonWebUiConfig;
+import helsinki.projects.Project;
 import helsinki.tablecodes.assets.AssetClass;
 import helsinki.tablecodes.assets.AssetType;
 import helsinki.webapp.config.assets.AssetFinDetWebUiConfig;
 import helsinki.webapp.config.assets.AssetWebUiConfig;
+import helsinki.webapp.config.projects.ProjectWebUiConfig;
 import helsinki.webapp.config.tablecodes.assets.AssetClassWebUiConfig;
 import helsinki.webapp.config.tablecodes.assets.AssetTypeWebUiConfig;
 import ua.com.fielden.platform.basic.config.Workflows;
@@ -85,6 +87,9 @@ public class WebUiConfig extends AbstractWebUiConfig {
         // Asset
         final AssetWebUiConfig assetWebUiConfig = AssetWebUiConfig.register(injector(), builder);
         final AssetFinDetWebUiConfig assetFinDetWebUiConfig = AssetFinDetWebUiConfig.register(injector(), builder);
+        
+        // Project related UI
+        final ProjectWebUiConfig projectWebUiConfig = ProjectWebUiConfig.register(injector(), builder);
 
 
         // Configure application web resources such as masters and centres
@@ -107,6 +112,7 @@ public class WebUiConfig extends AbstractWebUiConfig {
             captionBgColor("#42a5f5").menu()
                 .addMenuItem(Asset.ENTITY_TITLE).description(format("%s Centre", Asset.ENTITY_TITLE)).centre(assetWebUiConfig.centre).done()
                 .addMenuItem(AssetFinDet.ENTITY_TITLE).description(format("%s Centre", AssetFinDet.ENTITY_TITLE)).centre(assetFinDetWebUiConfig.centre).done()
+                .addMenuItem(Project.ENTITY_TITLE).description(format("%s Centre", Project.ENTITY_TITLE)).centre(projectWebUiConfig.centre).done()
                 .done().done().
             addModule("Users / Personnel").
                 description("Provides functionality for managing application security and personnel data.").
