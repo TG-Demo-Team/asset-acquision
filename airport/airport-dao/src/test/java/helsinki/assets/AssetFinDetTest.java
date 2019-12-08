@@ -2,7 +2,7 @@ package helsinki.assets;
 
 import static helsinki.assets.AssetDao.ERR_FAILED_SAVE;
 import static helsinki.assets.IAsset.DEFAULT_ASSET_NUMBER;
-import static helsinki.assets.validators.AssetFinDetAcquireDateWithinProjectPeriod.ERR_OUTSIDE_PROJECT_PERIOD;
+import static helsinki.assets.validators.AssetFinDetAcquireDateWithinProjectPeriodValidator.ERR_OUTSIDE_PROJECT_PERIOD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import helsinki.assets.validators.AssetFinDetAcquireDateWithinProjectPeriod;
+import helsinki.assets.validators.AssetFinDetAcquireDateWithinProjectPeriodValidator;
 import helsinki.projects.Project;
 import helsinki.tablecodes.assets.AssetClass;
 import helsinki.test_config.AbstractDaoTestCase;

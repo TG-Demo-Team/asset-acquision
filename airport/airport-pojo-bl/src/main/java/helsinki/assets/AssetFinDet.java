@@ -2,7 +2,7 @@ package helsinki.assets;
 
 import java.util.Date;
 
-import helsinki.assets.validators.AssetFinDetAcquireDateWithinProjectPeriod;
+import helsinki.assets.validators.AssetFinDetAcquireDateWithinProjectPeriodValidator;
 import helsinki.projects.Project;
 import ua.com.fielden.platform.entity.AbstractPersistentEntity;
 import ua.com.fielden.platform.entity.annotation.CompanionObject;
@@ -52,7 +52,7 @@ public class AssetFinDet extends AbstractPersistentEntity<Asset> {
     @DateOnly
     @MapTo
     @Title(value = "Acquire Date", desc = "The date when asset was made or purchased")
-    @BeforeChange(@Handler(AssetFinDetAcquireDateWithinProjectPeriod.class))
+    @BeforeChange(@Handler(AssetFinDetAcquireDateWithinProjectPeriodValidator.class))
     private Date acquireDate;
 
     @IsProperty

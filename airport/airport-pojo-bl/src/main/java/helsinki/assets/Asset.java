@@ -50,7 +50,7 @@ public class Asset extends ActivatableAbstractEntity<DynamicEntityKey> {
     private AssetFinDet finDet;
 
     @Observable
-    public Asset setFinDet(final AssetFinDet finDet) {
+    protected Asset setFinDet(final AssetFinDet finDet) {
         this.finDet = finDet;
         return this;
     }
