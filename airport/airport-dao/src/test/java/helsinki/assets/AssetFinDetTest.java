@@ -144,7 +144,8 @@ public class AssetFinDetTest extends AbstractDaoTestCase {
         assertNull(finDet.getAcquireDate());
         assertNull(finDet.getProject());
         
-        final Project project = save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project description"));
+        final Project newProject = save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project description"));
+        final Project project = co(Project.class).findById(newProject.getId(), IAssetFinDet.FETCH_PROVIDER.<Project>fetchFor("project").fetchModel());
         finDet.setProject(project);
         assertEquals(date("2019-12-08 00:00:00"), finDet.getAcquireDate());
     }
@@ -156,7 +157,8 @@ public class AssetFinDetTest extends AbstractDaoTestCase {
         assertNotNull(finDet.getAcquireDate());
         assertNull(finDet.getProject());
         
-        final Project project = save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project description"));
+        final Project newProject = save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project description"));
+        final Project project = co(Project.class).findById(newProject.getId(), IAssetFinDet.FETCH_PROVIDER.<Project>fetchFor("project").fetchModel());
         finDet.setProject(project);
         assertEquals(date("2019-12-10 00:00:00"), finDet.getAcquireDate());
         assertFalse(finDet.getProperty("acquireDate").isDirty());

@@ -16,6 +16,7 @@ import helsinki.assets.AssetFinDet;
 import helsinki.assets.IAssetFinDet;
 import helsinki.config.ApplicationDomain;
 import helsinki.personnel.Person;
+import helsinki.projects.Project;
 import helsinki.tablecodes.assets.AssetClass;
 import helsinki.tablecodes.assets.AssetType;
 import ua.com.fielden.platform.devdb_support.DomainDrivenDataPopulation;
@@ -97,7 +98,10 @@ public class PopulateDb extends DomainDrivenDataPopulation {
         final AssetFinDet finDet2 = co$(AssetFinDet.class).findById(asset2.getId(), IAssetFinDet.FETCH_PROVIDER.fetchModel());
         save(finDet2.setInitCost(Money.of("100.00")).setAcquireDate(date("2019-11-01 00:00:00")));
         final AssetFinDet finDet3 = co$(AssetFinDet.class).findById(asset3.getId(), IAssetFinDet.FETCH_PROVIDER.fetchModel());
-        save(finDet3.setInitCost(Money.of("10.00")).setAcquireDate(date("2018-11-01 00:00:00")));
+        save(finDet3.setInitCost(Money.of("10.00")));
+        
+        save(new_(Project.class).setName("PROJECT 1").setStartDate(date("2019-12-08 00:00:00")).setDesc("Project 1 description"));
+        save(new_(Project.class).setName("PROJECT 2").setStartDate(date("2020-01-02 00:00:00")).setDesc("Project 2 description"));
 
         LOGGER.info("Completed database creation and population.");
 	}
