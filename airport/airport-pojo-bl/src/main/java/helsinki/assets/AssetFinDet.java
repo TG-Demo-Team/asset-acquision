@@ -2,10 +2,13 @@ package helsinki.assets;
 
 import java.util.Date;
 
-import ua.com.fielden.platform.entity.AbstractEntity;
+import helsinki.assets.definers.AssetFinDetProjectDefiner;
+import helsinki.assets.validators.AssetFinDetAcquireDateWithinProjectPeriodValidator;
+import helsinki.projects.Project;
 import ua.com.fielden.platform.entity.AbstractPersistentEntity;
 import ua.com.fielden.platform.entity.annotation.CompanionObject;
 import ua.com.fielden.platform.entity.annotation.DateOnly;
+import ua.com.fielden.platform.entity.annotation.Dependent;
 import ua.com.fielden.platform.entity.annotation.IsProperty;
 import ua.com.fielden.platform.entity.annotation.KeyTitle;
 import ua.com.fielden.platform.entity.annotation.KeyType;
@@ -14,6 +17,9 @@ import ua.com.fielden.platform.entity.annotation.MapTo;
 import ua.com.fielden.platform.entity.annotation.Observable;
 import ua.com.fielden.platform.entity.annotation.SkipEntityExistsValidation;
 import ua.com.fielden.platform.entity.annotation.Title;
+import ua.com.fielden.platform.entity.annotation.mutator.AfterChange;
+import ua.com.fielden.platform.entity.annotation.mutator.BeforeChange;
+import ua.com.fielden.platform.entity.annotation.mutator.Handler;
 import ua.com.fielden.platform.reflection.TitlesDescsGetter;
 import ua.com.fielden.platform.types.Money;
 import ua.com.fielden.platform.utils.Pair;
@@ -48,7 +54,25 @@ public class AssetFinDet extends AbstractPersistentEntity<Asset> {
     @DateOnly
     @MapTo
     @Title(value = "Acquire Date", desc = "The date when asset was made or purchased")
+    @BeforeChange(@Handler(AssetFinDetAcquireDateWithinProjectPeriodValidator.class))
     private Date acquireDate;
+
+    @IsProperty
+    @MapTo
+    @Dependent("acquireDate")
+    @Title(value = "Project", desc = "Capex project for the acquisition of this asset")
+    @AfterChange(AssetFinDetProjectDefiner.class)
+    private Project project;
+
+    @Observable
+    public AssetFinDet setProject(final Project project) {
+        this.project = project;
+        return this;
+    }
+
+    public Project getProject() {
+        return project;
+    }
 
     @Override
     @Observable

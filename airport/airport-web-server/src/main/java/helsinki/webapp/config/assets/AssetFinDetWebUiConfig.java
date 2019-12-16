@@ -95,10 +95,11 @@ public class AssetFinDetWebUiConfig {
      * @return created entity master
      */
     private EntityMaster<AssetFinDet> createMaster(final Injector injector) {
-        final String layout = LayoutComposer.mkVarGridForMasterFitWidth(1, 2);
+        final String layout = LayoutComposer.mkVarGridForMasterFitWidth(1, 1, 2);
 
         final IMaster<AssetFinDet> masterConfig = new SimpleMasterBuilder<AssetFinDet>().forEntity(AssetFinDet.class)
                 .addProp("key").asAutocompleter().also()
+                .addProp("project").asAutocompleter().also()
                 .addProp("initCost").asMoney().also()
                 .addProp("acquireDate").asDatePicker().also()
                 .addAction(MasterActions.REFRESH).shortDesc("Cancel").longDesc("Cancel action")
