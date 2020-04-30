@@ -173,7 +173,9 @@ public class AssetClassTest extends AbstractDaoTestCase {
         final AssetClass ac42saved = co$.save(ac42);
         assertNotNull(ac42saved.getCreatedBy());
         assertNull(ac42saved.getLastUpdatedBy());
-        
+
+        final UniversalConstantsForTesting constants = (UniversalConstantsForTesting) getInstance(IUniversalConstants.class);
+        constants.setNow(dateTime("2019-10-01 11:30:01"));
         final AssetClass ac42savedAgain = co$.save(ac42saved.setDesc("new description"));
         assertNotNull(ac42savedAgain.getCreatedBy());
         assertNotNull(ac42savedAgain.getLastUpdatedBy());
